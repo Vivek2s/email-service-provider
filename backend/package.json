@@ -1,0 +1,44 @@
+{
+  "name": "email-microservice-backend",
+  "version": "1.0.0",
+  "description": "Email microservice backend",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "nodemon src/index.ts",
+    "build": "tsc",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@sendinblue/client": "^3.3.1",
+    "connect-mongo": "^5.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "jsonwebtoken": "^9.0.0",
+    "mailgun-js": "^0.22.0",
+    "mongoose": "^7.0.3",
+    "passport": "^0.6.0",
+    "passport-google-oauth20": "^2.0.0",
+    "redis": "^4.6.7",
+    "typescript": "^5.0.4",
+    "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.17",
+    "@types/express-session": "^1.17.5",
+    "@types/jest": "^29.5.0",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/mailgun-js": "^0.22.10",
+    "@types/node": "^18.15.11",
+    "@types/passport": "^1.0.12",
+    "@types/passport-google-oauth20": "^2.0.11",
+    "@types/winston": "^2.4.4",
+    "jest": "^29.5.0",
+    "nodemon": "^2.0.22",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.1"
+  }
+}

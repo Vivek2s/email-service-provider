@@ -1,0 +1,29 @@
+{
+  "vivek.behera@hunch.in": {
+    "name": "Hunch",
+    "domain": "hunch.in",
+    "quota": {
+      "daily": 100,
+      "warmupStart": 10,
+      "warmupDays": 30
+    }
+  },
+  "vivek.kumar@venturepact.com": {
+    "name": "VenturePact",
+    "domain": "venturepact.com",
+    "quota": {
+      "daily": 150,
+      "warmupStart": 15,
+      "warmupDays": 30
+    }
+  },
+  "gmail.com": {
+    "name": "Gmail Users",
+    "domain": "gmail.com",
+    "quota": {
+      "daily": 100,
+      "warmupStart": 10,
+      "warmupDays": 30
+    }
+  }
+} 
