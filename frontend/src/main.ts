@@ -20,6 +20,18 @@ axios.interceptors.request.use(config => {
   return config;
 });
 
+// Add response interceptor to handle errors
+axios.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response?.status === 401) {
+      // Clear auth state on unauthorized response
+      store.dispatch('auth/logout');
+    }
+    return Promise.reject(error);
+  }
+);
+
 const app = createApp(App);
 
 // Register all Element Plus icons
@@ -45,14 +57,17 @@ const initializeApp = async () => {
     
     if (token) {
       try {
-        console.log('Checking authentication...');
+        console.log('Checking auth state...');
         const user = await store.dispatch('auth/checkAuth');
         
         if (user) {
-          console.log('Auth check successful, navigating to send-email');
-          await router.push('/send-email');
+          console.log('Auth state valid, navigating to send-email');
+          // Only redirect if we're not already on the send-email page
+          if (window.location.pathname !== '/send-email') {
+            await router.push('/send-email');
+          }
         } else {
-          console.log('Auth check failed, redirecting to login');
+          console.log('No auth state, redirecting to login');
           await router.push('/login');
         }
       } catch (error) {

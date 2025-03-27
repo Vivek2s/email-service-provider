@@ -85,6 +85,40 @@ const verifyToken = (req: express.Request, res: express.Response, next: express.
   }
 };
 
+router.get('/me', verifyToken, async (req, res) => {
+  try {
+    console.log('Getting user info for:', req.user?._id);
+    
+    // Get email credentials
+    const emailCredential = await EmailCredential.findOne({
+      tenantId: req.user?.tenantId,
+      userId: req.user?.email
+    }).select('-accessToken -refreshToken');
+
+    if (!emailCredential) {
+      console.log('No email credentials found for user');
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Get quota configuration
+    const tenants = tenantsConfig as TenantsConfig;
+    const tenantConfig = req.user?.tenantId ? tenants[req.user.tenantId] : undefined;
+
+    const userInfo = {
+      id: req.user?._id,
+      email: req.user?.email,
+      tenantId: req.user?.tenantId,
+      provider: emailCredential.provider,
+      quota: tenantConfig?.quota
+    };
+
+    console.log('Returning user info:', userInfo);
+    return res.json(userInfo);
+  } catch (error) {
+    logger.error('Error getting user:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
 // Start OAuth flow
 router.get('/:provider',
   passport.authenticate('google', { 
@@ -159,43 +193,6 @@ router.get('/:provider/callback',
     }
   }
 );
-
-// Get current user
-router.get('/me', verifyToken, async (req, res) => {
-  try {
-    console.log('Getting user info for:', req.user?._id);
-    
-    // Get email credentials
-    const emailCredential = await EmailCredential.findOne({
-      tenantId: req.user?.tenantId,
-      userId: req.user?.email
-    }).select('-accessToken -refreshToken');
-
-    if (!emailCredential) {
-      console.log('No email credentials found for user');
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    // Get quota configuration
-    const tenants = tenantsConfig as TenantsConfig;
-    const tenantConfig = req.user?.tenantId ? tenants[req.user.tenantId] : undefined;
-
-    const userInfo = {
-      id: req.user?._id,
-      email: req.user?.email,
-      tenantId: req.user?.tenantId,
-      provider: emailCredential.provider,
-      quota: tenantConfig?.quota
-    };
-
-    console.log('Returning user info:', userInfo);
-    return res.json(userInfo);
-  } catch (error) {
-    logger.error('Error getting user:', error);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
 // Logout
 router.post('/logout', (_req, res) => {
   return res.json({ message: 'Logged out successfully' });

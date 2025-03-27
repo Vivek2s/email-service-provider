@@ -45,23 +45,26 @@ const actions = {
     console.log('Auth store: Setting token');
     commit('SET_TOKEN', token);
     
-    // Set initial auth state based on token presence
-    commit('SET_USER', {
-      id: 'temp',
-      name: 'Loading...',
-      email: 'Loading...',
-      provider: 'google'
-    });
-    
-    // Verify the state was updated
-    const state = store.state.auth;
-    console.log('Auth store state after update:', {
-      isAuthenticated: state.isAuthenticated,
-      hasUser: !!state.user,
-      hasToken: !!state.token
-    });
-    
-    return state.user;
+    try {
+      // Verify the token with backend
+      const response = await axios.get(`${process.env.VUE_APP_API_URL}/auth/me`, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        withCredentials: true
+      });
+      
+      if (response.data) {
+        commit('SET_USER', response.data);
+        return response.data;
+      }
+      throw new Error('No user data received');
+    } catch (error) {
+      console.error('Login verification failed:', error);
+      commit('CLEAR_AUTH');
+      throw error;
+    }
   },
 
   async checkAuth({ commit, state }: ActionContext<AuthState, any>) {
@@ -80,8 +83,11 @@ const actions = {
         withCredentials: true
       });
       
-      commit('SET_USER', response.data);
-      return response.data;
+      if (response.data) {
+        commit('SET_USER', response.data);
+        return response.data;
+      }
+      return null;
     } catch (error) {
       console.error('Auth check failed:', error);
       commit('CLEAR_AUTH');

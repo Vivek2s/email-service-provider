@@ -34,7 +34,13 @@ cd email-microservice
 npm run install:all
 ```
 
-3. Configure environment variables:
+3. Set up Google OAuth credentials:
+   - Create a new project in Google Cloud Console
+   - Enable the Gmail API
+   - Create OAuth 2.0 credentials
+   - Download the credentials file and save it as `backend/src/google/credential.json`
+
+4. Configure environment variables:
 
 Backend (.env):
 ```env
@@ -61,62 +67,7 @@ VUE_APP_API_URL=http://localhost:3000
 VUE_APP_BASE_URL=/
 ```
 
-4. Start the development servers:
+5. Start the development servers:
 ```bash
 npm run dev
 ```
-
-This will start both the backend (port 3000) and frontend (port 8080) servers.
-
-## Usage
-
-1. Access the frontend at http://localhost:8080
-2. Sign in with your Google account
-3. Use the email form to send emails
-4. Monitor your email quota in the UI
-
-## API Endpoints
-
-### Authentication
-- GET /auth/google - Initiate Google OAuth login
-- GET /auth/google/callback - Google OAuth callback
-- GET /auth/me - Get current user info
-- POST /auth/logout - Logout user
-
-### Email
-- POST /email/send - Send an email
-- GET /email/quota - Get email quota status
-
-## Email Quota Management
-
-The service implements a warmup strategy for email quotas:
-- Starting quota: 10 emails per day
-- Maximum quota: 100 emails per day
-- Warmup period: 30 days
-- Linear increase from starting to maximum quota
-
-## Development
-
-### Backend
-```bash
-cd backend
-npm run dev
-```
-
-### Frontend
-```bash
-cd frontend
-npm run serve
-```
-
-## Building for Production
-
-```bash
-npm run build
-```
-
-This will build both the backend and frontend for production deployment.
-
-## License
-
-MIT 

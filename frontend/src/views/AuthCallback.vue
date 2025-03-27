@@ -40,30 +40,14 @@ export default defineComponent({
           console.error('No token received in callback');
           throw new Error('No token received');
         }
-        console.log('Token received, attempting login...');
+        console.log('Token received, setting auth state...');
         
         // Set the token and initial state
         await store.dispatch('auth/login', token);
-        console.log('Login successful, waiting before redirect...');
+        console.log('Auth state set, redirecting to send-email');
         
-        // Add a small delay to ensure state is updated
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Verify the auth state before redirecting
-        const authState = store.state.auth;
-        console.log('Auth state before redirect:', {
-          isAuthenticated: authState.isAuthenticated,
-          hasUser: !!authState.user,
-          hasToken: !!authState.token
-        });
-        
-        if (authState.isAuthenticated && authState.token) {
-          console.log('Auth state verified, redirecting to send-email');
-          await router.replace('/send-email');
-        } else {
-          console.error('Auth state verification failed');
-          throw new Error('Auth state verification failed');
-        }
+        // Redirect to send-email
+        await router.replace('/send-email');
       } catch (error) {
         console.error('Auth error:', error);
         console.error('Error details:', error instanceof Error ? error.message : 'Unknown error');
